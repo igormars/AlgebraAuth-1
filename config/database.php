@@ -22,5 +22,27 @@ return [
     | array format for simplicity. Here you can tweak the fetch style.
     |
     */
-	'fetch' => PDO::FETCH_OBJ
+	'fetch' => PDO::FETCH_OBJ,
+	
+	/*
+    |--------------------------------------------------------------------------
+    | Database Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here are each of the database connections setup for your application.
+    |
+    */
+	'mysql' => [
+		'host' => '127.0.0.1',
+		'user' => 'root',
+		'pass' => '',
+		'db' => 'algebra_auth',
+		'charset' => 'utf8'
+	],
+	'sqlite' => [
+	
+	],
+	'pgsql' => [
+	
+	]
 ];
