@@ -42,6 +42,118 @@ class DB
 		$this->_user = $config[$this->_driver]['user'];
 		$this->_pass = $config[$this->_driver]['pass'];
 		$this->_charset = $config[$this->_driver]['charset'];
+		
+		try {
+			
+			$this->_connection = new PDO($this->_driver.':host='.$this->_host.';dbname='.$this->_db.';charset='.$this->_charset, $this->_user, $this->_pass);
+			
+		} catch (PDOException $e) {
+			
+			die($e->getMessage());
+			
+		}
+		
 	}
+	
+	/**
+	* Magic method clone is empty and private to prevent duplication of connection
+	*
+	*/
+	private function __clone(){}
+	
+	/**
+	*  PDO Connection
+	*
+	* @return _connection property
+	*/
+	public function getConnection()
+	{
+		return $this->_connection;
+	}
+	
+	/**
+	*  Prepare and execute SQL queries.
+	*
+	* @param  string  $sql
+	* @param  array  $params
+	* @return DB object
+	*/
+	public function query($sql, $params = array())
+	{
+		$this->_error = false;
+		
+		if($this->_query = $this->_connection->prepare($sql)) {
+			$x = 1;
+			if(!empty($params)) {
+				foreach($params as $param) {
+					$this->_query->bindValue($x,$param);
+					$x++;
+				}
+			}
+			if($this->_query->execute()) {
+				$this->_results = $this->_query->fetchAll($this->_fetch);
+				$this->_count = $this->_query->rowCount();
+			} else {
+				$this->_error = true;
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
+	*  Create SQL queries.
+	*
+	* @param  string  $action
+	* @param  string  $table
+	* @param  array  $where
+	* @return DB object
+	*/
+	public function action($action, $table, $where = array())
+	{
+		
+	}
+	
+	/**
+	*  Return all records.
+	*
+	* @return array(object(stdClass))
+	*/
+	public function results()
+	{
+		return $this->_results;
+	}
+	
+	/**
+	*  Return first record.
+	*
+	* @return object(stdClass)
+	*/
+	public function first()
+	{
+		return $this->_results[0];
+	}
+	
+	/**
+	*  Check for errors.
+	*
+	* @return Bool
+	*/
+	public function error()
+	{
+		return $this->_error;
+	}
+	
+	/**
+	*  Return number of records.
+	*
+	* @return Int
+	*/
+	public function count()
+	{
+		return $this->_count;
+	}
+	
+	
 	
 }

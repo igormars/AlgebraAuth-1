@@ -21,11 +21,7 @@
 </div>
 
 <?php
-	$obj = DB::getInstance();
-	$obj1 = DB::getInstance();
-	echo '<pre>';
-	var_dump($obj1);
-	echo '</pre>';
+
 	Helper::getFooter();
 
 ?>
