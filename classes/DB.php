@@ -109,9 +109,106 @@ class DB
 	* @param  array  $where
 	* @return DB object
 	*/
-	public function action($action, $table, $where = array())
-	{
+	private function action($action,$table,$where = array())
+	{	
+		#if(isset($where[2])) -> brže izvođenje
+		if(count($where) === 3) {
+			
+			$operators = array('=','<','>','<=','>=','<>');
+			
+			$field     = $where[0];
+			$operator  = $where[1];
+			$value     = $where[2];
+			
+			if(in_array($operator, $operators)) {
+				$sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
+				
+				if(!$this->query($sql,array($value))->error()) {
+					return $this;
+				}
+			}
+			
+		} else {
+			$sql = "{$action} FROM {$table}";
+			
+			if(!$this->query($sql)->error()) {
+				return $this;
+			}
+		}
 		
+		return false;
+	}
+	
+	/**
+	*  Run SELECT query.
+	*
+	* @param  string  $field
+	* @param  string  $table
+	* @param  array  $where
+	* @return DB object
+	*/
+	
+	public function get($field, $table, $where = array())
+	{
+		return $this->action("SELECT {$field}", $table, $where);
+	}
+	
+	/**
+	*  Delete record.
+	*
+	* @param  string  $table
+	* @param  array  $where
+	* @return DB object
+	*/
+	public function delete($table, $where = array())
+	{
+		return $this->action("DELETE", $table, $where);
+	}
+	
+	/**
+	*  Insert new record.
+	*
+	* @param  string  $table
+	* @param  array  $fields
+	* @return Bool
+	*/
+	public function insert($table, $fields)
+	{
+		$keys = implode(',',array_keys($fields));
+		$values = str_repeat('?,', count($fields) - 1) . '?';
+		
+		/* 
+		$fields_num = count($fields);
+		$values = '';
+		$x = 1;
+		
+		foreach($fields as $field) {
+			$values .= '?';
+			if($x < $fields_num) {
+				$values .= ','
+			}
+			$x++;
+		}
+		*/
+		
+		$sql = "INSERT INTO {$table} ({$keys}) VALUES ({$values})";
+		
+		if(!$this->query($sql, $fields)->error()) {
+			return true;
+		}
+		return false;		
+	}
+	
+	/**
+	*  Select record by id.
+	*
+	* @param  int  $id
+	* @param  string  $table
+	* @return DB object
+	*/
+	public function find($id, $table)
+	{
+		return $this->action("SELECT *", $table, array('id','=',$id));
 	}
 	
 	/**

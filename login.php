@@ -4,14 +4,25 @@
 	
 	Helper::getHeader('Login Page');
 	
-	$user = 'kele';
-	$pass = 'password';
+	DB::getInstance()->insert('users', array(
+										'username' => 'Cicarija',
+										'password' => 1234569,
+										'salt'     => 'salt',
+										'name'     => 'Mirko Cicarija',
+										'role_id'  => 1
+										)
+	);
 	
-	#$query = DB::getInstance()->query('SELECT * FROM users WHERE username = ? AND password = ?', array($user,$pass));
+	#$query = DB::getInstance()->query('SELECT * FROM users WHERE id = ?', array(1));
 	
+	#$action = DB::getInstance()->action('SELECT *','users',array('id','=',1));
 	
-	$query = DB::getInstance()->query('SELECT * FROM users');
+	$get = DB::getInstance()->get('*','users');
 	
+	#$find = DB::getInstance()->find(1,'users');
+	
+	$delete = DB::getInstance()->delete('users',array('id','=',5));
+
 	$results = DB::getInstance()->results();
 	
 	echo '<pre>';
