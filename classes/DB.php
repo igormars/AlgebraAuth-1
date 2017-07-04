@@ -16,6 +16,7 @@ class DB
 	private $_query;
 	private $_results;
 	private $_count = 0;
+	private $_where;
 	# errors
 	private $_error = false;
 	
@@ -140,6 +141,29 @@ class DB
 	}
 	
 	/**
+	*  Create SQL WHERE expression.
+	*
+	* @param  array   $where
+	* @return DB object
+	*/
+	private function where_str($where = array())
+	{
+		if(count($where) === 3) {
+			$operators = array('=','<','>','<=','>=','<>');
+			$field     = $where[0];
+			$operator  = $where[1];
+			$value     = $where[2];
+			if(in_array($operator, $operators)) {
+				$this->_where = "WHERE {$field} {$operator} ?";
+				return $value;
+			}
+		}
+		
+		$this->_where = "";
+		return "";
+	}
+	
+	/**
 	*  Run SELECT query.
 	*
 	* @param  string  $field
@@ -197,6 +221,44 @@ class DB
 			return true;
 		}
 		return false;		
+	}
+	
+	/**
+	*  Update record.
+	*
+	* @param  string  $table
+	* @param  array  $fields
+	* @param  array  $where
+	* @return Bool
+	*/
+	public function update($table, $fields = array(), $where = array())
+	{
+		$value = $this->where_str($where);
+		
+		if(!empty($fields)) {
+			$fields_num = count($fields);
+			$fields_string = '';
+			
+			$x = 1;
+			foreach($fields as $key => $val) {
+				$fields_string .= $key . ' = ?';
+				if($x < $fields_num) {
+					$fields_string .= ',';
+				}
+				$x++;
+			}
+
+			$fields[] = $value;
+			
+			$sql = "UPDATE {$table} SET {$fields_string} {$this->_where}";
+			
+			if(!$this->query($sql,$fields)->error()) {
+				return true;
+			}
+			
+		}
+		
+		return false;
 	}
 	
 	/**
