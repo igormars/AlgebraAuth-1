@@ -42,6 +42,8 @@
 				
 				try {
 					
+					$user->create();
+					
 				} catch(Exception $e) {
 					Session::flash('danger', $e->getMessage());
 					Redirect::to('register');
