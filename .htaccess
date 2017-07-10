@@ -1,0 +1,2 @@
+RewriteEngine On
+ErrorDocument 404 /Tomislav/PHP&MySQL/Algebra_Auth/includes/errors/404.php
