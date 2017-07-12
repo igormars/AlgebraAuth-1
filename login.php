@@ -2,6 +2,12 @@
 
 	require_once 'core/init.php';
 	
+	$user = new User();
+	
+	if($user->check()) {
+		Redirect::to('dashboard');
+	}
+	
 	$validation = new Validation();
 	
 	if(Input::exists()) {
@@ -9,18 +15,24 @@
 		if(Token::check(Input::get('_csrf'))) {
 			
 			$validate = $validation->check(array(
-				'username' => array(
-					'required' => true,
-					'min'      => 8
-				),
-				'password' => array(
-					'required' => true
-				)
+				'username' => array('required' => true),
+				'password' => array('required' => true)
 			));
 			
 			if($validate->passed()) {
-				Session::flash('success', 'Validacija uspjela');
+				
+				$remember = (bool)Input::get('remember');
+
+				if($user->login(Input::get('username'), Input::get('password'), $remember)) {
+					
+					Redirect::to('dashboard');
+					
+				}
+				
+				Session::flash('danger', 'Sorry, login faild! Please try again.');
+				Redirect::to('login');
 			}	
+			
 		} else {
 			Session::flash('danger', 'CSRF Token missmatch');
 		}
@@ -51,6 +63,11 @@
 						<label for="password" class="control-label">Password</label>
 						<input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
 						<?php echo ($validation->hasError('password')) ? '<p class="text-danger">' . $validation->hasError('password') . '</p>' : '' ?>
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="remember" value="true"> Remember me
+						</label>
 					</div>
 					<div class="form-group">
 						<button type="submit" class="btn btn-primary">Sign In</button>

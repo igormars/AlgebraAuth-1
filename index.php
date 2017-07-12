@@ -2,6 +2,12 @@
 
 	require_once 'core/init.php';
 	
+	$user = new User();
+	
+	if($user->check()) {
+		Redirect::to('dashboard');
+	}
+	
 	Helper::getHeader('Algebra Auth');
 		
 ?>

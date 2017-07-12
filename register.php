@@ -39,10 +39,16 @@
 			if($validate->passed()) {
 				
 				$salt = Hash::salt(32);
-				
+				$salt = Hash::make($salt);
 				try {
 					
-					$user->create();
+					$user->create(array(
+						'username' => Input::get('username'),
+						'password' => Hash::make(Input::get('password'), $salt),
+						'salt'     => $salt,
+						'name'     => Input::get('name'),
+						'role_id'  => 1
+					));
 					
 				} catch(Exception $e) {
 					Session::flash('danger', $e->getMessage());
