@@ -11,4 +11,9 @@ class Hash
 	{
 		return hash('sha256', $string . $salt);
 	}
+	
+	public static function uniqeid()
+	{
+		return hash('sha256', uniqid());
+	}
 }

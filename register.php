@@ -65,7 +65,7 @@
 		}
 	}
 		
-	Helper::getHeader('Registration Page');
+	Helper::getHeader('Registration Page', 'header', $user);
 	
 	require_once 'notifications.php';
 	

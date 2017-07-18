@@ -3,12 +3,12 @@
 	require_once 'core/init.php';
 	
 	$user = new User();
-	
+
 	if(!$user->check()) {
 		Redirect::to('login');
 	}
 	
-	Helper::getHeader('Login Page');
+	Helper::getHeader('Dashboard', 'header', $user);
 	
 	require_once 'notifications.php';
 	

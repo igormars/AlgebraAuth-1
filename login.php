@@ -22,7 +22,7 @@
 			if($validate->passed()) {
 				
 				$remember = (bool)Input::get('remember');
-
+				
 				if($user->login(Input::get('username'), Input::get('password'), $remember)) {
 					
 					Redirect::to('dashboard');
@@ -38,7 +38,7 @@
 		}
 	}
 		
-	Helper::getHeader('Login Page');
+	Helper::getHeader('Login Page', 'header', $user);
 	
 	require_once 'notifications.php';
 	

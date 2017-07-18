@@ -8,7 +8,7 @@
 		Redirect::to('dashboard');
 	}
 	
-	Helper::getHeader('Algebra Auth');
+	Helper::getHeader('Algebra Auth', 'header', $user);
 		
 ?>
 
